@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="color: white">
     歌手页面
   </div>
 </template>
