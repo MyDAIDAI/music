@@ -4,7 +4,9 @@
     <m-header></m-header>
     <tab></tab>
     <!-- router-view的位置是有链接的内容的展示位置 -->
-    <router-view></router-view>
+    <keep-alive>
+      <router-view></router-view>    
+    </keep-alive>
   </div>
 </template>
 

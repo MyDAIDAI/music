@@ -35,7 +35,6 @@
         getRecommend().then((res) => {
           if (res.code === ERR_OK) {
             this.recommend = res.data.slider
-            console.log(this.recommend)
           }
         })
       }
