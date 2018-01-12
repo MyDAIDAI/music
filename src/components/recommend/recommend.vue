@@ -50,7 +50,7 @@
     },
     created () {
       this._getRecommend()
-      this._getDiscList()
+      this._getDiscList()      
     },
     methods: {
       _getRecommend () {
