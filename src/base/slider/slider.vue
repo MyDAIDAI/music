@@ -116,7 +116,6 @@
             speed: 400
           }
         })
-
         this.slider.on('scrollEnd', this._onScrollEnd)
 
         this.slider.on('touchend', () => {
