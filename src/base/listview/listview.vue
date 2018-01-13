@@ -1,5 +1,10 @@
 <template>
-  <scroll :data="data" class="listview" ref="listview">
+  <scroll :data="data" 
+          class="listview" 
+          ref="listview" 
+          @scroll="scroll" 
+          :listenScroll="listenScroll" 
+          :probeType="probeType">
     <ul>
       <li v-for="group in data" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
@@ -29,6 +34,7 @@
   import Scroll from 'base/scroll/scroll'
   import {getData} from 'common/js/dom'
   const ANCHOR_HEIGHT = 18
+
   export default {
     name: 'listview',
     components: {
@@ -42,11 +48,15 @@
     },
     data () {
       return {
-        currentIndex: 0
+        currentIndex: 0,
+        scrollY: -1
       }
     },
     created () {
       this.touch = {}
+      this.probeType = 3
+      this.listenScroll = true
+      this.listHeight = []
     },
     computed: {
       shortcutList () {
@@ -74,8 +84,45 @@
         this.currentIndex = parseInt(anchorIndex)
         this._scrollTo(anchorIndex)
       },
+      scroll (pos) {
+        this.scrollY = pos.y
+      },
+      _caculateHeight () {
+        this.listHeight = []
+        let height = 0
+        this.listHeight.push(height)
+        let list = this.$refs.listGroup
+        for (let i = 0; i < list.length; i++) {
+          let itemHight = list[i].clientHeight
+          height += itemHight
+          this.listHeight.push(height)
+        }
+      },
       _scrollTo (index) {
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index])
+      }
+    },
+    watch: {
+      data () {
+        setTimeout(() => {
+          this._caculateHeight()
+        }, 20)
+      },
+      scrollY (newY) {
+        if (newY > 0) {
+          this.currentIndex = 0
+          return
+        }
+        let listHeight = this.listHeight
+        for (let i = 0; i < listHeight.length - 1; i++) {
+          let height1 = listHeight[i]
+          let height2 = listHeight[i + 1]
+          if (!height2 || (-newY >= height1 && -newY < height2)) {
+            this.currentIndex = i
+            return
+          }
+        }
+        this.currentIndex = 0
       }
     }
   }

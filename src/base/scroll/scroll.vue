@@ -25,6 +25,10 @@
       direction: {
         type: String,
         default: DIRECTION_V
+      },
+      listenScroll: {
+        type: Boolean,
+        default: false
       }
     },
     mounted () {
@@ -42,6 +46,11 @@
           click: this.click,
           eventPassthrough: this.direction === DIRECTION_V ? DIRECTION_H : DIRECTION_V
         })
+        if (this.listenScroll) {
+          this.scroll.on('scroll', (pos) => {
+            this.$emit('scroll', pos)
+          })
+        }
       },
       enable () {
         this.scroll && this.scroll.enable()
