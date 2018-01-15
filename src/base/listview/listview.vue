@@ -27,18 +27,25 @@
             :class="{'current': currentIndex === index}">{{item}}</li>
       </ul>
     </div>
+    <div class="list-fixed" v-show="fixedTitle" ref="fixed">
+      <h1 class="fixed-title">{{fixedTitle}}</h1>
+    </div>
+    <div class="loading-container">
+      <loading v-show="!data.length"></loading>
+    </div>
   </scroll>
 </template>
 
 <script type="text/ecmascript-6">
   import Scroll from 'base/scroll/scroll'
+  import Loading from 'base/loading/loading'
   import {getData} from 'common/js/dom'
   const ANCHOR_HEIGHT = 18
-
+  const FIXED_HEIGHT = 30
   export default {
     name: 'listview',
     components: {
-      Scroll
+      Scroll, Loading
     },
     props: {
       data: {
@@ -49,7 +56,8 @@
     data () {
       return {
         currentIndex: 0,
-        scrollY: -1
+        scrollY: -1,
+        diff: -1
       }
     },
     created () {
@@ -63,6 +71,12 @@
         return this.data.map((group) => {
           return group.title.substr(0, 1)
         })
+      },
+      fixedTitle () {
+        if (this.scrollY > 0) {
+          return ''
+        }
+        return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
       }
     },
     methods: {
@@ -71,7 +85,6 @@
         let firstTouch = e.touches[0]
         this.touch.y1 = firstTouch.pageY
         this.touch.anchorIndex = anchorIndex
-        this.currentIndex = parseInt(anchorIndex)
         this._scrollTo(anchorIndex)
       },
       onShortcutListTouchMove (e) {
@@ -81,7 +94,6 @@
         this.touch.y2 = firstTouch.pageY
         let disData = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0
         let anchorIndex = parseInt(this.touch.anchorIndex) + disData
-        this.currentIndex = parseInt(anchorIndex)
         this._scrollTo(anchorIndex)
       },
       scroll (pos) {
@@ -99,7 +111,18 @@
         }
       },
       _scrollTo (index) {
+        // 处理上下限可点击问题
+        if (!index && index !== 0) {
+          return
+        }
+        // 处理上下限move跳转问题
+        if (index < 0) {
+          index = 0
+        } else if (index > this.listHeight.length - 2) {
+          index = this.listHeight.length - 2
+        }
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index])
+        this.scrollY = -this.listHeight[index]
       }
     },
     watch: {
@@ -109,20 +132,34 @@
         }, 20)
       },
       scrollY (newY) {
+        // 向下滚动时newY大于0,向上滚动时newY小于0
         if (newY > 0) {
           this.currentIndex = 0
           return
         }
+        // 中间部分滚动
         let listHeight = this.listHeight
         for (let i = 0; i < listHeight.length - 1; i++) {
           let height1 = listHeight[i]
           let height2 = listHeight[i + 1]
-          if (!height2 || (-newY >= height1 && -newY < height2)) {
+          if (-newY >= height1 && -newY < height2) {
             this.currentIndex = i
+            this.diff = height2 + newY
             return
           }
+          // 当滚动到底部，且-newY大于最后一个元素的上限
+          this.currentIndex = listHeight.length - 2
         }
         this.currentIndex = 0
+      },
+      diff (newDiff) {
+        let fixedTop = (newDiff > 0 && newDiff < FIXED_HEIGHT) ? newDiff - FIXED_HEIGHT : 0
+        // 如果差值不在范围时值为0，值一直为0时则不做操作
+        if (fixedTop === this.fixedTop) {
+          return
+        }
+        this.fixedTop = fixedTop
+        this.$refs.fixed.style.transform = `translate3d(0,${fixedTop}px,0)`
       }
     }
   }

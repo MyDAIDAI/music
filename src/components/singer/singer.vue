@@ -24,7 +24,7 @@
     mounted () {
       setTimeout(() => {
         this._getSingerList()
-      })
+      }, 20)
     },
     methods: {
       _getSingerList () {
