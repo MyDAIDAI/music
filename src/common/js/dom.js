@@ -22,3 +22,31 @@ export function getData (el, name, val) {
     return el.getAttribute(prefix + name)
   }
 }
+// 浏览器能力检测
+let elementStyle = document.createElement('div').style
+let vendor = (() => {
+  let transformName = {
+    webkit: 'webkitTransform',
+    Moz: 'MozTransform',
+    O: 'OTransform',
+    ms: 'msTransform',
+    standard: 'transform'
+  }
+  for (let key in transformName) {
+    if (elementStyle[transformName[key]] !== undefined) {
+      return key
+    }
+  }
+  return false
+})()
+
+// 为style自动添加prefix
+export function prefixStyle (style) {
+  if (vendor === false) {
+    return false
+  }
+  if (vendor === 'standard') {
+    return style
+  }
+  return vendor + style.charAt(0).toUpperCase() + style.substr(1)
+}
