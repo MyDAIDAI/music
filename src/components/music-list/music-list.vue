@@ -14,10 +14,10 @@
       <div class="filter" ref="filter"></div>
     </div>
     <div class="bg-layer" ref="layer"></div>
-    <scroll :data="songs" 
-            class="list" 
-            ref="list" 
-            :probeType="probeType" 
+    <scroll :data="songs"
+            class="list"
+            ref="list"
+            :probeType="probeType"
             :listenScroll="listenScroll"
             @scroll="scroll">
       <div class="song-list-wrapper">
@@ -88,6 +88,7 @@
         this.$router.back()
       },
       selectItem (item, index) {
+        console.log(this.songs, index)
         this.selectPlay({
           list: this.songs,
           index
