@@ -15,7 +15,7 @@
         <div class="middle">
           <div class="middle-l">
             <div class="cd-wrapper" ref="cdWrapper">
-              <div class="cd">
+              <div class="cd" :class="cdCls">
                 <img class="image" :src="currentSong.image">
               </div>
             </div>
@@ -72,6 +72,9 @@
 
   export default {
     computed: {
+      cdCls () {
+        return this.playing ? 'play' : 'play pause'
+      },
       playIcon () {
         return this.playing ? 'icon-pause' : 'icon-play'
       },
