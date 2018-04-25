@@ -26,13 +26,13 @@
             <div class="icon i-left">
               <i class="icon-sequence"></i>
             </div>
-            <div class="icon i-left">
+            <div class="icon i-left" :class="disableCls">
               <i class="icon-prev" @click="prev"></i>
             </div>
-            <div class="icon i-center">
+            <div class="icon i-center" :class="disableCls">
               <i :class="playIcon" @click="togglePlaying"></i>
             </div>
-            <div class="icon i-right">
+            <div class="icon i-right" :class="disableCls">
               <i class="icon-next" @click="next"></i>
             </div>
             <div class="icon i-right">
@@ -79,6 +79,9 @@
     computed: {
       cdCls () {
         return this.playing ? 'play' : 'play pause'
+      },
+      disableCls () {
+        return this.songReady ? '' : 'disable'
       },
       playIcon () {
         return this.playing ? 'icon-pause' : 'icon-play'
@@ -137,7 +140,9 @@
       ready () {
         this.songReady = true
       },
-      error () {},
+      error () {
+        this.songReady = true
+      },
       enter (el, done) {
         const {x, y, scale} = this._getPosAndScale()
         // translate的值为移动的值
