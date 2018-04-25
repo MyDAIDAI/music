@@ -30,7 +30,7 @@
               <i class="icon-prev"></i>
             </div>
             <div class="icon i-center">
-              <i class="icon-play"></i>
+              <i :class="playIcon" @click="togglePlaying"></i>
             </div>
             <div class="icon i-right">
               <i class="icon-next"></i>
@@ -51,13 +51,15 @@
           <h2 class="name" v-html="currentSong.name"></h2>
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
-        <div class="control"></div>
+        <div class="control">
+          <i :class="miniIcon" @click.stop="togglePlaying"></i>
+        </div>
         <div class="control">
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
-    <audio autoplay :src="currentSong.url" ref="audio"></audio>
+    <audio :src="currentSong.url" ref="audio"></audio>
 	</div>
 </template>
 
@@ -70,6 +72,12 @@
 
   export default {
     computed: {
+      playIcon () {
+        return this.playing ? 'icon-pause' : 'icon-play'
+      },
+      miniIcon () {
+        return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
+      },
       ...mapGetters([
         'fullScreen',
         'playlist',
@@ -86,6 +94,9 @@
       },
       open () {
         this.setFullScreen(true)
+      },
+      togglePlaying () {
+        this.setPlayingState(!this.playing)
       },
       enter (el, done) {
         const {x, y, scale} = this._getPosAndScale()
@@ -142,14 +153,19 @@
         }
       },
       ...mapMutations({
-        setFullScreen: 'SET_FULL_SCREEN'
+        setFullScreen: 'SET_FULL_SCREEN',
+        setPlayingState: 'SET_PLAYING_STATE'
       })
     },
     watch: {
       currentSong () {
         this.$nextTick(() => {
-          console.log(this.currentSong.url)
           this.$refs.audio.play()
+        })
+      },
+      playing (newPlaying) {
+        this.$nextTick(() => {
+          newPlaying ? this.$refs.audio.play() : this.$refs.audio.pause()
         })
       }
     }
