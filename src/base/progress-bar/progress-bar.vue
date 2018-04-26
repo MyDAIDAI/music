@@ -2,7 +2,7 @@
   <div class="progress-bar" ref="progressBar">
     <div class="bar-inner">
       <div class="progress" ref="progress"></div>
-      <div class="progress-btn-wrapper" ref="progressBtn">
+      <div class="progress-btn-wrapper" ref="progressBtn" @touchstart.prevent="progressTouchStart" @touchmove.prevent="progressTouchMove" @touchend="progressTouchEnd">
         <div class="progress-btn"></div>
       </div>
     </div>
@@ -19,13 +19,43 @@ export default {
       default: 0
     }
   },
+  created () {
+    this.touch = {}
+  },
+  methods: {
+    progressTouchStart (e) {
+      this.touch.initial = true
+      this.touch.startX = e.touches[0].pageX
+      this.touch.left = this.$refs.progress.clientWidth
+    },
+    progressTouchMove (e) {
+      if (!this.touch.initial) {
+        return
+      }
+      let deltaX = e.touches[0].pageX - this.touch.startX
+      let offsetWidth = Math.min(this.$refs.progressBar.clientWidth, Math.max(0, this.touch.left + deltaX))
+      this._offset(offsetWidth)
+    },
+    progressTouchEnd () {
+      this.touch.initial = false
+      this.triggerPercent()
+    },
+    triggerPercent () {
+      let barWidth = this.$refs.progressBar.clientWidth - ProgressBtnWidth
+      let percent = this.$refs.progress.clientWidth / barWidth
+      this.$emit('percentChange', percent)
+    },
+    _offset (offsetWidth) {
+      this.$refs.progress.style.width = `${offsetWidth}px`
+      this.$refs.progressBtn.style[transform] = `translate3d(${offsetWidth}px, 0, 0)`
+    }
+  },
   watch: {
     percent (newPercent) {
-      if (newPercent >= 0) {
+      if (newPercent >= 0 && !this.touch.initial) {
         let barWidth = this.$refs.progressBar.clientWidth - ProgressBtnWidth
         let offsetWidth = newPercent * barWidth
-        this.$refs.progress.style.width = `${offsetWidth}px`
-        this.$refs.progressBtn.style[transform] = `translate3d(${offsetWidth}px, 0, 0)`
+        this._offset(offsetWidth)
       }
     }
   }
