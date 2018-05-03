@@ -31,7 +31,7 @@
           </div>
           <div class="operators">
             <div class="icon i-left">
-              <i class="icon-sequence"></i>
+              <i :class="iconMode" @click="modeChange"></i>
             </div>
             <div class="icon i-left" :class="disableCls">
               <i class="icon-prev" @click="prev"></i>
@@ -78,6 +78,7 @@
   import {prefixStyle} from 'common/js/dom'
   import ProgressBar from 'base/progress-bar/progress-bar'
   import ProgressCircle from 'base/progress-circle/progress-circle'
+  import {playMode} from 'common/js/config'
 
   const transform = prefixStyle('transform')
 
@@ -100,6 +101,9 @@
       playIcon () {
         return this.playing ? 'icon-pause' : 'icon-play'
       },
+      iconMode () {
+        return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+      },
       miniIcon () {
         return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
       },
@@ -113,7 +117,8 @@
         'playing',
         'currentIndex',
         'mode',
-        'sequenceList'
+        'sequenceList',
+        'mode'
       ])
     },
     methods: {
@@ -162,6 +167,10 @@
       },
       updateTime (e) {
         this.currentTime = e.target.currentTime
+      },
+      modeChange () {
+        let mode = (this.mode + 1) % 3
+        this.setPlayMode(mode)
       },
       formate (interval) {
         // 向下取整
@@ -248,7 +257,8 @@
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN',
         setPlayingState: 'SET_PLAYING_STATE',
-        setCurrentIndex: 'SET_CURRENT_INDEX'
+        setCurrentIndex: 'SET_CURRENT_INDEX',
+        setPlayMode: 'SET_PLAY_MODE'
       })
     },
     watch: {
