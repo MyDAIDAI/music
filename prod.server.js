@@ -78,7 +78,7 @@ app.use(compression())
 
 app.use(express.static('./dist'))
 
-module.exports = app.listen(port, function (err) {
+module.exports = app.listen(9000, function (err) {
   if (err) {
     console.log(err)
     return
