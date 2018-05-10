@@ -178,6 +178,7 @@
         } else {
           list = this.sequenceList
         }
+        // TODO 播放模式切换后播放列表数据Bug
         this.resetCurrentIndex(list)
         this.setPlayList(list)
       },
