@@ -16,7 +16,7 @@ export function getRecommend () {
 }
 
 export function getDiscList () {
-  const url = debug ? '/api/getDiscList' : 'http://cp.dpdaidai.top/api/getDiscList'
+  const url = debug ? '/api/getDiscList' : 'http://cp.dpdaidai.top/music/api/getDiscList'
   const data = Object.assign({}, commonParams, {
     picmid: 1,
     platform: 'yqq',
