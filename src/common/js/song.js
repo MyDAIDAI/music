@@ -57,3 +57,7 @@ function filterSinger (singer) {
   })
   return ret.join('/')
 }
+
+export function isValidMusic (musicData) {
+  return musicData.songid && musicData.albummid && (!musicData.pay || musicData.pay.payalbumprice === 0)
+}

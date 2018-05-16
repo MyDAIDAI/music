@@ -27,6 +27,7 @@
   import Loading from 'base/loading/loading'
   import {getTopList} from 'api/rank'
   import {ERR_OK} from 'api/config'
+  import {mapMutations} from 'vuex'
 
   export default {
     components: {Scroll, Loading},
@@ -50,7 +51,11 @@
         this.$router.push({
           path: `/rank/${item.id}`
         })
-      }
+        this.setTopList(item)
+      },
+      ...mapMutations({
+        setTopList: 'SET_TOP_LIST'
+      })
     }
   }
 </script>
