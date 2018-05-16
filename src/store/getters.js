@@ -15,3 +15,4 @@ export const mode = state => state.mode
 export const currentSong = (state) => {
   return state.playlist[state.currentIndex]
 }
+export const topList = state => state.topList
