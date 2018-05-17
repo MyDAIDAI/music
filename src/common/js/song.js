@@ -61,3 +61,13 @@ function filterSinger (singer) {
 export function isValidMusic (musicData) {
   return musicData.songid && musicData.albummid && (!musicData.pay || musicData.pay.payalbumprice === 0)
 }
+
+export function normalizeSongs (list) {
+  let ret = []
+  list.forEach((musicData) => {
+    if (isValidMusic(musicData)) {
+      ret.push(createSong(musicData))
+    }
+  })
+  return ret
+}
