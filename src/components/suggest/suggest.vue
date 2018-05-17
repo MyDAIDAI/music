@@ -23,6 +23,7 @@
   import {search} from 'api/search'
   import {normalizeSongs} from 'common/js/song'
   import Singer from 'common/js/singer'
+  import {mapMutations} from 'vuex'
 
   const perpage = 20
   const TYPE_SINGER = 'singer'
@@ -82,7 +83,7 @@
       },
       listScroll () {},
       selectItem (item) {
-        if (item.type && item.type === 'TYPE_SINGER') {
+        if (item.type && item.type === TYPE_SINGER) {
           const singer = new Singer({
             id: item.singermid,
             name: item.singername
@@ -90,6 +91,7 @@
           this.$router.push({
             path: `/search/${singer.id}`
           })
+          this.setSinger(singer)
         } else {
         //  TODO 歌曲设置播放
         }
@@ -110,7 +112,10 @@
         if (!song.list.length || (song.curnum + (song.curpage - 1) * song.perpage) >= song.totalnum) {
           this.hasMore = false
         }
-      }
+      },
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      })
     },
     watch: {
       query (newQuery) {
