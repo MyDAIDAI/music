@@ -8,7 +8,7 @@ function insertArray (arr, val, compare, maxLen) {
     return
   }
   if (index > 0) {
-    arr.split(index, 1)
+    arr.splice(index, 1)
   }
   arr.unshift(val)
   if (maxLen && arr.length > maxLen) {
@@ -42,6 +42,7 @@ export function deleteSearch (query) {
 }
 export function saveSearch (query) {
   let searches = storge.get(SEARCH_KET, [])
+  console.log('searches', searches)
   insertArray(searches, query, (item) => {
     return item === query
   }, SEARCH_MAX_LEN)
