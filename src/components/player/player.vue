@@ -68,7 +68,7 @@
         </div>
       </div>
     </transition>
-    <audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error" @timeupdate="updateTime" ></audio>
+    <audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio>
 	</div>
 </template>
 
@@ -146,6 +146,16 @@
         }
         this.songReady = false
       },
+      loop () {
+        this.$refs.audio.currentTime = 0
+      },
+      end () {
+        if (this.mode === playMode.loop) {
+          this.loop()
+        } else {
+          this.next()
+        }
+      },
       next () {
         if (!this.songReady) {
           return
@@ -174,11 +184,11 @@
         this.setPlayMode(mode)
         let list = null
         if (mode === playMode.random) {
+          // 设置随机列表
           list = shuffle(this.sequenceList)
         } else {
           list = this.sequenceList
         }
-        // TODO 播放模式切换后播放列表数据Bug
         this.resetCurrentIndex(list)
         this.setPlayList(list)
       },
@@ -280,7 +290,7 @@
     },
     watch: {
       currentSong (newSong, oldSong) {
-        if (newSong.id === oldSong.id) {
+        if (!newSong.id || !newSong.url || (oldSong && (newSong.id === oldSong.id))) {
           return
         }
         this.$nextTick(() => {
