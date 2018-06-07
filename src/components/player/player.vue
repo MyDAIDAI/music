@@ -148,6 +148,7 @@
       },
       loop () {
         this.$refs.audio.currentTime = 0
+        this.$refs.audio.play()
       },
       end () {
         if (this.mode === playMode.loop) {
