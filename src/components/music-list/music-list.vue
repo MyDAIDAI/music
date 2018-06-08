@@ -88,7 +88,6 @@
         this.$router.back()
       },
       selectItem (item, index) {
-        console.log(this.songs, index)
         this.selectPlay({
           list: this.songs,
           index

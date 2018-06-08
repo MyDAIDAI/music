@@ -27,7 +27,7 @@ const app = express()
 var apiRouter = express.Router()
 apiRouter.get('/getDiscList', function(req, res) {
   let url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
-  
+
   return axios.get(url, {
     headers: {
       referer: 'https://y.qq.com/portal/playlist.html'
@@ -35,6 +35,30 @@ apiRouter.get('/getDiscList', function(req, res) {
     params: req.query
   }).then((response) => {
     res.json(response.data)
+  }).catch((e) => {
+    console.log(e)
+  })
+})
+
+apiRouter.get('/lyric', function (req, res) {
+  let url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
+
+  return axios.get(url, {
+    headers: {
+      referer: 'https://c.y.qq.com/',
+      host: 'c.y.qq.com'
+    },
+    params: req.query
+  }).then((response) => {
+    var ret = response.data
+    if (typeof ret === 'string') {
+      var reg = /^\w+\(({.+})\)$/
+      var matches = response.data.match(reg)
+      if (matches) {
+        ret = JSON.parse(matches[1])
+      }
+    }
+    res.json(ret)
   }).catch((e) => {
     console.log(e)
   })
