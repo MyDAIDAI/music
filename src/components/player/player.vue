@@ -156,7 +156,13 @@
         this.setFullScreen(true)
       },
       togglePlaying () {
+        if (!this.songReady) {
+          return
+        }
         this.setPlayingState(!this.playing)
+        if (this.currentLyric) {
+          this.currentLyric.togglePlay()
+        }
       },
       prev () {
         if (!this.songReady) {
@@ -175,6 +181,9 @@
       loop () {
         this.$refs.audio.currentTime = 0
         this.$refs.audio.play()
+        if (this.currentLyric) {
+          this.currentLyric.seek()
+        }
       },
       end () {
         if (this.mode === playMode.loop) {
@@ -359,9 +368,13 @@
         }
       },
       onProgressBarChange (percent) {
+        const currentTime = this.currentSong.duration * percent
         this.$refs.audio.currentTime = percent * this.currentSong.duration
         if (!this.playing) {
           this.togglePlaying()
+        }
+        if (this.currentLyric) {
+          this.currentLyric.seek(currentTime * 1000)
         }
       },
       getLyric () {
@@ -393,6 +406,9 @@
       currentSong (newSong, oldSong) {
         if (!newSong.id || !newSong.url || (oldSong && (newSong.id === oldSong.id))) {
           return
+        }
+        if (this.currentLyric) {
+          this.currentLyric.stop()
         }
         this.$nextTick(() => {
           this.$refs.audio.play()
