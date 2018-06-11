@@ -1,9 +1,9 @@
 <template>
-  <scroll :data="data" 
-          class="listview" 
-          ref="listview" 
-          @scroll="scroll" 
-          :listen-scroll="listenScroll" 
+  <scroll :data="data"
+          class="listview"
+          ref="listview"
+          @scroll="scroll"
+          :listen-scroll="listenScroll"
           :probe-type="probeType">
     <ul>
       <li v-for="group in data" class="list-group" ref="listGroup">
@@ -18,11 +18,11 @@
     </ul>
     <div class="list-shortcut">
       <ul>
-        <li class="item" 
-            v-for="(item, index) in shortcutList" 
-            @touchstart.stop.prevent="onShortcutListTouchStart" 
+        <li class="item"
+            v-for="(item, index) in shortcutList"
+            @touchstart.stop.prevent="onShortcutListTouchStart"
             @touchmove.stop.prevent="onShortcutListTouchMove"
-            :data-index="index" 
+            :data-index="index"
             :key="index"
             :class="{'current': currentIndex === index}">{{item}}</li>
       </ul>
@@ -101,6 +101,9 @@
       },
       scroll (pos) {
         this.scrollY = pos.y
+      },
+      refresh () {
+        this.$refs.listview.refresh()
       },
       _caculateHeight () {
         this.listHeight = []
