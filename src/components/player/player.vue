@@ -101,7 +101,8 @@
   import ProgressCircle from 'base/progress-circle/progress-circle'
   import {playMode} from 'common/js/config'
   import {shuffle} from 'common/js/util'
-  import Lyric from 'lyric-parser'
+  // import Lyric from 'lyric-parser'
+  import Lyric from 'common/js/lyric'
   import Scroll from 'base/scroll/scroll'
 
   const transform = prefixStyle('transform')
@@ -389,6 +390,7 @@
           this.currentLyric.seek(currentTime * 1000)
         }
       },
+      // 将获取到的歌词与时间列表
       getLyric () {
         this.currentSong.getLyric().then((lyric) => {
           this.currentLyric = new Lyric(lyric, this.handleLyric)
@@ -401,6 +403,7 @@
           this.currentLineNum = 0
         })
       },
+      // 歌词滚动处理
       handleLyric ({lineNum, txt}) {
         this.currentLineNum = lineNum
         if (lineNum > 5) {
